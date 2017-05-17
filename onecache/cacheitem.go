@@ -1,0 +1,99 @@
+package onecache
+
+import (
+	"sync"
+	"time"
+)
+// CacheItem is an individual cache item
+// Parameter data contains the user-set value in the cache.
+type CacheItem struct {
+	sync.RWMutex
+	// The item's key.
+	key interface{}
+	// The item's data.
+	data interface{}
+	// How long will the item live in the cache when not being accessed/kept alive.
+	lifeSpan time.Duration
+
+	// Creation timestamp.
+	createdOn time.Time
+	// Last access timestamp.
+	accessedOn time.Time
+	// How often the item was accessed.
+	accessCount int64
+
+	// Callback method triggered right before removing the item from the cache
+	aboutToExpire func(key interface{})
+}
+
+// NewCacheItem returns a newly created CacheItem.
+// Parameter key is the item's cache-key.
+// Parameter lifeSpan determines after which time period without an access the item
+// will get removed from the cache.
+// Parameter data is the item's value.
+func NewCacheItem(key interface{}, lifeSpan time.Duration, data interface{}) *CacheItem {
+	t := time.Now()
+	return &CacheItem{
+		key:           key,
+		lifeSpan:      lifeSpan,
+		createdOn:     t,
+		accessedOn:    t,
+		accessCount:   0,
+		aboutToExpire: nil,
+		data:          data,
+	}
+}
+
+// KeepAlive marks an item to be kept for another expireDuration period.
+func (item *CacheItem) SetKeepAlive() {
+	item.Lock()
+	defer item.Unlock()
+	item.accessedOn = time.Now()
+	item.accessCount++
+}
+
+// LifeSpan returns this item's expiration duration.
+func (item *CacheItem) GetLifeSpan() time.Duration {
+	// immutable
+	return item.lifeSpan
+}
+
+// AccessedOn returns when this item was last accessed.
+func (item *CacheItem) GetAccessedOn() time.Time {
+	item.RLock()
+	defer item.RUnlock()
+	return item.accessedOn
+}
+
+// CreatedOn returns when this item was added to the cache.
+func (item *CacheItem) GetCreatedOn() time.Time {
+	// immutable
+	return item.createdOn
+}
+
+// AccessCount returns how often this item has been accessed.
+func (item *CacheItem) GetAccessCount() int64 {
+	item.RLock()
+	defer item.RUnlock()
+	return item.accessCount
+}
+
+// Key returns the key of this cached item.
+func (item *CacheItem) GetKey() interface{} {
+	// immutable
+	return item.key
+}
+
+// Data returns the value of this cached item.
+func (item *CacheItem) GetData() interface{} {
+	// immutable
+	return item.data
+}
+
+// SetAboutToExpireCallback configures a callback, which will be called right
+// before the item is about to be removed from the cache.
+func (item *CacheItem) SetAboutToExpireCallback(f func(interface{})) {
+	item.Lock()
+	defer item.Unlock()
+	item.aboutToExpire = f
+}
