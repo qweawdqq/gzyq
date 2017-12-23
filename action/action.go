@@ -3,11 +3,12 @@ package action
 import (
 	"bytes"
 	"strings"
-	"fmt"
+
 	"errors"
 	"strconv"
 	"log"
 	"gzyq/oneConfig"
+	"fmt"
 )
 
 type Action interface {
@@ -16,15 +17,28 @@ type Action interface {
 	SetText(text string) //设置待解析字符串
 	GetText() string
 	DoAction(mMap map[string]string) error
+	GetSort() string
 }
 
 type SubAction struct {
+	Id   string
 	Name string //名字
 	Text string //待解析字符串
+	Sort string
 }
 type ComAction struct {
+	Id   string
 	Name string //名字
 	Text string //待解析字符串
+	Sort string
+}
+
+func (action *SubAction)GetSort() string {
+	return action.Sort
+}
+
+func (action *ComAction)GetSort() string {
+	return action.Sort
 }
 
 func (action *SubAction)DoAction(mMap map[string]string) error {
@@ -33,7 +47,7 @@ func (action *SubAction)DoAction(mMap map[string]string) error {
 		str1, err := getSubAction(action.GetText(), mMap)
 		if err != nil {
 			mMap[oneConfig.ONE_ERROR_MSG] = err.Error()
-			mMap[oneConfig.ONE_ERROR_NAME] = oneConfig.ONE_ERROR_ACTION+action.Name
+			mMap[oneConfig.ONE_ERROR_NAME] = oneConfig.ONE_ERROR_ACTION + action.Name
 			return err
 		}
 		str = str1
@@ -68,17 +82,14 @@ func getSubAction(str string, mMap map[string]string) (string, error) {
 		isOddNumber := true
 		for _, v := range array {
 			if isOddNumber {
-				fmt.Println("奇数" + v)
 				if v != "" {
 					buffer.WriteString(v)
 				}
 			} else {
-				fmt.Println("偶数" + v)
 				if v != "" {
 					if value, ok := mMap[v]; ok {
 						buffer.WriteString(value)
 					} else {
-						fmt.Println("Key Not Found in ")
 						err := errors.New("不能发现key值为<" + v + ">的值")
 						return "", err
 					}
@@ -97,7 +108,7 @@ func (action *ComAction)DoAction(mMap map[string]string) error {
 	defer func() {
 		if r := recover(); r != nil {
 			log.Println("Runtime error caught: %v", r)
-			mMap[oneConfig.ONE_ERROR_NAME] = oneConfig.ONE_ERROR_ACTION+action.Name
+			mMap[oneConfig.ONE_ERROR_NAME] = oneConfig.ONE_ERROR_ACTION + action.Name
 			mMap[oneConfig.ONE_ERROR_MSG] = oneConfig.ONE_ERROR_INFO1
 
 		}
@@ -112,6 +123,7 @@ func (action *ComAction)DoAction(mMap map[string]string) error {
 	} else {
 		str = action.GetText()
 	}
+	fmt.Println("action125,str==", str)
 	str = strconv.FormatFloat(Count(str), 'f', -1, 64)
 	mMap[action.GetName()] = str
 	return nil
@@ -189,27 +201,29 @@ func calculateRPN(datas []string) float64 {
 			}
 		} else {
 			p1 := stack.Pop().(float64)
+			fmt.Println("p=1", p1)
 			p2 := stack.Pop().(float64)
+			fmt.Println("p=2", p2)
 			p3 := normalCalculate(p2, p1, datas[i])
+			fmt.Println("p=3", p3)
+
 			stack.Push(p3)
 		}
 	}
 	res := stack.Pop().(float64)
+	fmt.Println("res=", res)
+
 	return res
 }
 
 func normalCalculate(a, b float64, operation string) float64 {
-	switch operation{
-	case "*":
-		return a * b
-	case "-":
-		return a - b
-	case "+":
-		return a + b
-	case "/":
-		return a / b
-	default:
+	// 查找键值是否存在
+	if v, ok := ComMap[operation]; ok {
+		return v.DoCom(a, b)
+	} else {
+		fmt.Println("Key Not Found")
 		panic("invalid operator")
+
 	}
 }
 

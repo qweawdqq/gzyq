@@ -3,9 +3,17 @@ package rule
 import (
 	"gzyq/operation"
 	"gzyq/action"
-	"fmt"
-	"strconv"
+	_"strconv"
+
 )
+
+type RuleNode struct {
+	Id    string
+	Alpha *AlphaNode
+
+}
+
+
 
 /** 
  * @Description:rule  alphaNode beteNode
@@ -14,10 +22,11 @@ import (
  */
 
 type AlphaNode struct {
+	Id              string
 	Name            string               //名字
 	Value           bool                 //值
 	OpertionKey     string               //参与运算的值
-	OperationSymbol int8                 //运算符号
+	OperationSymbol int64                //运算符号
 	OperationValue  string               //参与运算的值
 	ReAction        *action.ResultAction //返回值action
 	BeteList        []*BeteNode          //bete节点集合
@@ -30,17 +39,16 @@ type AlphaNode struct {
  * @date : 2017/6/7 15:55
  */
 func (alpha *AlphaNode)DoAction(isNeedCompute bool, mMap map[string]string) string {
-	fmt.Println("进来了")
-	fmt.Println("alpha.name=",alpha.Name)
-	if alpha.ReAction != nil {
-
-	fmt.Println("alpha.ReAction.Name",alpha.ReAction.GetName())
-	}
+	//fmt.Println("alpha.name=", alpha.Name)
+	//if alpha.ReAction != nil {
+	//fmt.Println("alpha.ReAction.Name", alpha.ReAction.GetName())
+	//}
 
 	//计算 赋值
 	if isNeedCompute {
-		b1 := alpha.GetNewValue(mMap)
-		fmt.Println("b1==", strconv.FormatBool(b1))
+		alpha.GetNewValue(mMap)
+		//b1 := alpha.GetNewValue(mMap)
+		//fmt.Println("b1==", strconv.FormatBool(b1))
 	}
 	alphaValue := alpha.GetValue()
 
@@ -52,16 +60,15 @@ func (alpha *AlphaNode)DoAction(isNeedCompute bool, mMap map[string]string) stri
 		}
 	}
 	//走bete
-	bList := alpha.BeteList
-	if bList != nil {
-		fmt.Println("bete节点不为空")
-
-		for _, v := range bList {
-			fmt.Println("v.Alpha.Name-----",v.Alpha.Name)
+	//bList := alpha.BeteList
+	if alpha.BeteList != nil {
+		//fmt.Println("bete节点不为空")
+		for _, v := range alpha.BeteList {
+			//fmt.Println("v.Alpha.Name-----", v.Alpha.Name)
 			v.Alpha.GetNewValue(mMap)
 			//如果为true 则向下走
 			alphaBool := v.GetConnBool(alpha)
-			fmt.Println("alphaBool", strconv.FormatBool(alphaBool))
+			//fmt.Println("alphaBool", strconv.FormatBool(alphaBool))
 			if alphaBool {
 				v.Alpha.SetValue(alphaBool)
 				reStr := v.Alpha.DoAction(false, mMap)
@@ -91,9 +98,9 @@ func (alpha *AlphaNode) SetValue(value bool) {
 }
 func (alpha *AlphaNode)  SetValueByStr(mMap map[string]string) {
 	op := mMap[alpha.OpertionKey]
-	fmt.Println("op", op)
-	fmt.Println("Symbol", alpha.OperationSymbol)
-	fmt.Println("Value", alpha.OperationValue)
+	//fmt.Println("op", op)
+	//fmt.Println("Symbol", alpha.OperationSymbol)
+	//fmt.Println("Value", alpha.OperationValue)
 	alpha.Value = operation.JudgmentArray[alpha.OperationSymbol].Judgment(op, alpha.OperationValue)
 }
 func (alpha *AlphaNode) GetNewValue(mMap map[string]string) bool {
@@ -103,10 +110,11 @@ func (alpha *AlphaNode) GetNewValue(mMap map[string]string) bool {
 
 type BeteNode struct {
 	Alpha    *AlphaNode
-	BeteType uint8 //连接符号
+	BeteType uint64 //连接符号
+	Sort     string
 }
 
-const BETE_CONN_ADD uint8 = 1
+const BETE_CONN_ADD uint64 = 1
 const BETE_CONN_OR uint8 = 2
 /**
  * @Description:连接两个Alpha节点  获取值
@@ -114,16 +122,16 @@ const BETE_CONN_OR uint8 = 2
  * @date : 2017/6/7 16:20
  */
 func (beteNode *BeteNode)GetConnBool(alpha *AlphaNode) bool {
-	fmt.Println("运算alpha名称",alpha.Name)
-	fmt.Println("连接类型", beteNode.BeteType)
-	fmt.Println(beteNode.GetAlpha().Name)
+	//fmt.Println("运算alpha名称", alpha.Name)
+	//fmt.Println("连接类型", beteNode.BeteType)
+	//fmt.Println(beteNode.GetAlpha().Name)
 	if beteNode.BeteType == BETE_CONN_ADD {
 		return beteNode.Alpha.GetValue()&& alpha.Value
 	} else {
 		return beteNode.Alpha.GetValue() || alpha.Value
 	}
 }
-func (beteNode *BeteNode)GetAlpha()*AlphaNode{
+func (beteNode *BeteNode)GetAlpha() *AlphaNode {
 	return beteNode.Alpha
 }
 
@@ -134,3 +142,5 @@ func (beteNode *BeteNode)GetIsResult() bool {
 func (beteNode *BeteNode) DoAction(mMap map[string]string) {
 	beteNode.Alpha.ReAction.DoAction(mMap)
 }
+
+
