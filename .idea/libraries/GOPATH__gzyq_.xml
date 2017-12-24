@@ -1,12 +1,22 @@
 <component name="libraryTable">
   <library name="GOPATH &lt;gzyq&gt;">
     <CLASSES>
-      <root url="file://D:/gopath/src/hello" />
-      <root url="file://D:/gopath/src/github.com" />
+      <root url="file://$PROJECT_DIR$/../testmenu" />
+      <root url="file://$PROJECT_DIR$/../github.com" />
+      <root url="file://$PROJECT_DIR$/../gftest" />
+      <root url="file://$PROJECT_DIR$/../git.apache.org" />
+      <root url="file://$PROJECT_DIR$/../admintest" />
+      <root url="file://$PROJECT_DIR$/../golang.org" />
+      <root url="file://$PROJECT_DIR$/../oneRuleWork" />
     </CLASSES>
     <SOURCES>
-      <root url="file://D:/gopath/src/hello" />
-      <root url="file://D:/gopath/src/github.com" />
+      <root url="file://$PROJECT_DIR$/../testmenu" />
+      <root url="file://$PROJECT_DIR$/../github.com" />
+      <root url="file://$PROJECT_DIR$/../gftest" />
+      <root url="file://$PROJECT_DIR$/../git.apache.org" />
+      <root url="file://$PROJECT_DIR$/../admintest" />
+      <root url="file://$PROJECT_DIR$/../golang.org" />
+      <root url="file://$PROJECT_DIR$/../oneRuleWork" />
     </SOURCES>
     <excluded>
       <root url="file://$PROJECT_DIR$" />

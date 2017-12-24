@@ -7,7 +7,6 @@ import (
 	"gzyq/rule"
 	"errors"
 	"strconv"
-
 	"fmt"
 )
 
@@ -172,24 +171,37 @@ func GetSubActionMap(actionList []model.OneSubAction) (map[string][]action.Actio
 		for _, subAction := range actionList {
 			if value, ok := mMap[subAction.PrientId]; ok {
 				//存在的话就在后面添加 完了排序
-				if subAction.Type == "2" {
-					value = append(value, &action.ComAction{subAction.Id, subAction.Name, subAction.Text, subAction.Sort})
-				} else {
-					value = append(value, &action.SubAction{subAction.Id, subAction.Name, subAction.Text, subAction.Sort})
-				}
-				//如果长度大于1则需要排序
-				if len(value) > 1 {
-					SetActionSort(value)
-				}
+				//if  oneConfig.ACTION_TYPE_SUB ==  subAction.Type{
+				//	value = append(value, &action.ComAction{subAction.Id, subAction.Name, subAction.Text, subAction.Sort})
+				//} else {
+				//	value = append(value, &action.SubAction{subAction.Id, subAction.Name, subAction.Text, subAction.Sort})
+				//}
+                                actionBean := action.Factory(subAction.Type)
+				actionBean.SetId(subAction.Id)
+				actionBean.SetName(subAction.Name)
+				actionBean.SetText(subAction.Text)
+				actionBean.SetSort(subAction.Sort)
+				value = append(value,actionBean)
+
+				//如果长度大于1则需要排序  这里先不要排序了
+				//if len(value) > 1 {
+				//	SetActionSort(value)
+				//}
 				mMap[subAction.PrientId] = value
 
 			} else {
 				//不存在则直接创建一个
-				if subAction.Type == "2" {
-					mMap[subAction.PrientId] = []action.Action{&action.ComAction{subAction.Id, subAction.Name, subAction.Text, subAction.Sort}}
-				} else {
-					mMap[subAction.PrientId] = []action.Action{&action.SubAction{subAction.Id, subAction.Name, subAction.Text, subAction.Sort}}
-				}
+				//if  "2"  == subAction.Type{
+				//	mMap[subAction.PrientId] = []action.Action{&action.ComAction{subAction.Id, subAction.Name, subAction.Text, subAction.Sort}}
+				//} else {
+				//	mMap[subAction.PrientId] = []action.Action{&action.SubAction{subAction.Id, subAction.Name, subAction.Text, subAction.Sort}}
+				//}
+				actionBean := action.Factory(subAction.Type)
+				actionBean.SetId(subAction.Id)
+				actionBean.SetName(subAction.Name)
+				actionBean.SetText(subAction.Text)
+				actionBean.SetSort(subAction.Sort)
+				mMap[subAction.PrientId] = []action.Action{actionBean}
 			}
 		}
 		return mMap, nil

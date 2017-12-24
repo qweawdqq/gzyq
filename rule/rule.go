@@ -5,6 +5,8 @@ import (
 	"gzyq/action"
 	_"strconv"
 
+	"gzyq/logUtils"
+	"github.com/astaxie/beego/orm"
 )
 
 type RuleNode struct {
@@ -38,7 +40,7 @@ type AlphaNode struct {
  * @author : 贾亮
  * @date : 2017/6/7 15:55
  */
-func (alpha *AlphaNode)DoAction(isNeedCompute bool, mMap map[string]string) string {
+func (alpha *AlphaNode)DoAction(isNeedCompute bool, mMap map[string]string,oneOrm orm.Ormer,log logUtils.LogUtils ,sfkqOrm bool,sfkqLog bool) string {
 	//fmt.Println("alpha.name=", alpha.Name)
 	//if alpha.ReAction != nil {
 	//fmt.Println("alpha.ReAction.Name", alpha.ReAction.GetName())
@@ -54,7 +56,7 @@ func (alpha *AlphaNode)DoAction(isNeedCompute bool, mMap map[string]string) stri
 
 	// 走action
 	if alphaValue == true&&alpha.ReAction != nil {
-		alpha.ReAction.DoAction(mMap)
+		alpha.ReAction.DoAction(mMap,oneOrm,log,sfkqOrm,sfkqLog)
 		if alpha.ReAction.GetIsReturn() {
 			return alpha.ReAction.GetResultStr(mMap)
 		}
@@ -71,7 +73,7 @@ func (alpha *AlphaNode)DoAction(isNeedCompute bool, mMap map[string]string) stri
 			//fmt.Println("alphaBool", strconv.FormatBool(alphaBool))
 			if alphaBool {
 				v.Alpha.SetValue(alphaBool)
-				reStr := v.Alpha.DoAction(false, mMap)
+				reStr := v.Alpha.DoAction(false, mMap,oneOrm,log,sfkqOrm,sfkqLog)
 				if reStr != "" {
 					return reStr
 				}
@@ -83,7 +85,7 @@ func (alpha *AlphaNode)DoAction(isNeedCompute bool, mMap map[string]string) stri
 		return ""
 	}
 	//走alpha
-	return alpha.NextAlpha.DoAction(true, mMap)
+	return alpha.NextAlpha.DoAction(true, mMap,oneOrm,log,sfkqOrm,sfkqLog)
 }
 
 func (alpha *AlphaNode)SetBeteList() {
@@ -139,8 +141,8 @@ func (beteNode *BeteNode)GetIsResult() bool {
 	return beteNode.Alpha.ReAction.GetIsReturn()
 }
 
-func (beteNode *BeteNode) DoAction(mMap map[string]string) {
-	beteNode.Alpha.ReAction.DoAction(mMap)
+func (beteNode *BeteNode) DoAction(mMap map[string]string,oneOrm orm.Ormer,onelog logUtils.LogUtils ,sfkqOrm bool,sfkqLog bool) {
+	beteNode.Alpha.ReAction.DoAction(mMap,oneOrm,onelog,sfkqOrm,sfkqLog)
 }
 
 

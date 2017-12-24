@@ -10,10 +10,11 @@ import (
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 
+	"time"
 )
 
 func init()  {
-	orm.RegisterModel(new(OneAlpha), new(OneBete), new(OneSubAction), new(OneResAction), new(RuleMenu))//注册表studentinfo 如果没有会自动创建
+	orm.RegisterModel(new(OneAlpha), new(OneBete), new(OneSubAction), new(OneResAction), new(RuleMenu),new(TestBesn),new(LogBean))//注册表studentinfo 如果没有会自动创建
 }
 
 
@@ -66,4 +67,24 @@ type RuleMenu struct {
 	Url        string
 	IndexAlpha string
 }
-
+//测试用的bean
+type TestBesn struct {
+	Id         string `orm:"pk"`
+	Name       string
+	Info       string
+	PrientId   string
+	Sort       string
+	Url        string
+	IndexAlpha string
+}
+//测试用的bean
+type LogBean struct {
+	Id         string `orm:"pk"`
+	RequestFw       string //请求的服务
+	RequestUser       string//请求的人
+	RequestTime   time.Time //请求时间
+	RuleID       string  //请求的规则ID
+	RuleName        string//请求的规则名称
+	Lct string //流程图
+	Rz string //详细的日志
+}

@@ -3,73 +3,26 @@ package action
 import (
 	"bytes"
 	"strings"
-
 	"errors"
 	"strconv"
-	"log"
-	"gzyq/oneConfig"
+
 	"fmt"
+	"github.com/astaxie/beego/orm"
+	"gzyq/logUtils"
 )
 
 type Action interface {
 	GetName() string
 	SetName(name string)
 	SetText(text string) //设置待解析字符串
+	SetId(id string)
+	SetSort(sort string)
 	GetText() string
-	DoAction(mMap map[string]string) error
+	DoAction(mMap map[string]string,oneOrm orm.Ormer,log logUtils.LogUtils ,sfkqOrm bool,sfkqLog bool) error
 	GetSort() string
 }
 
-type SubAction struct {
-	Id   string
-	Name string //名字
-	Text string //待解析字符串
-	Sort string
-}
-type ComAction struct {
-	Id   string
-	Name string //名字
-	Text string //待解析字符串
-	Sort string
-}
 
-func (action *SubAction)GetSort() string {
-	return action.Sort
-}
-
-func (action *ComAction)GetSort() string {
-	return action.Sort
-}
-
-func (action *SubAction)DoAction(mMap map[string]string) error {
-	var str = ""
-	if strings.Contains(action.GetText(), "$") {
-		str1, err := getSubAction(action.GetText(), mMap)
-		if err != nil {
-			mMap[oneConfig.ONE_ERROR_MSG] = err.Error()
-			mMap[oneConfig.ONE_ERROR_NAME] = oneConfig.ONE_ERROR_ACTION + action.Name
-			return err
-		}
-		str = str1
-	} else {
-		str = action.GetText()
-	}
-	mMap[action.GetName()] = str
-	return nil
-
-}
-func (action *SubAction)GetText() string {
-	return action.Text
-}
-func (action *SubAction)GetName() string {
-	return action.Name
-}
-func (action *SubAction)SetText(text string) {
-	action.Text = text
-}
-func (action *SubAction)SetName(name string) {
-	action.Name = name
-}
 /**
  * @Description: 拼接字符串的方法 （根据$）
  * @author : 贾亮
@@ -103,43 +56,6 @@ func getSubAction(str string, mMap map[string]string) (string, error) {
 }
 
 
-//计算部分
-func (action *ComAction)DoAction(mMap map[string]string) error {
-	defer func() {
-		if r := recover(); r != nil {
-			log.Println("Runtime error caught: %v", r)
-			mMap[oneConfig.ONE_ERROR_NAME] = oneConfig.ONE_ERROR_ACTION + action.Name
-			mMap[oneConfig.ONE_ERROR_MSG] = oneConfig.ONE_ERROR_INFO1
-
-		}
-	}()
-	var str = ""
-	if strings.Contains(action.GetText(), "$") {
-		str1, err := getSubAction(action.GetText(), mMap)
-		if err != nil {
-			return err
-		}
-		str = str1
-	} else {
-		str = action.GetText()
-	}
-	fmt.Println("action125,str==", str)
-	str = strconv.FormatFloat(Count(str), 'f', -1, 64)
-	mMap[action.GetName()] = str
-	return nil
-}
-func (action *ComAction)GetText() string {
-	return action.Text
-}
-func (action *ComAction)GetName() string {
-	return action.Name
-}
-func (action *ComAction)SetText(text string) {
-	action.Text = text
-}
-func (action *ComAction)SetName(name string) {
-	action.Name = name
-}
 
 type StackNode struct {
 	Data interface{}
@@ -372,9 +288,9 @@ type ResultAction struct {
 func (action *ResultAction)GetName() string {
 	return action.Name
 }
-func (action *ResultAction)DoAction(mMap map[string]string) {
+func (action *ResultAction)DoAction(mMap map[string]string,oneOrm orm.Ormer,log logUtils.LogUtils ,sfkqOrm bool,sfkqLog bool) {
 	for _, v := range action.ActionList {
-		v.DoAction(mMap)
+		v.DoAction(mMap,oneOrm,log,sfkqOrm,sfkqLog)
 	}
 }
 

@@ -1,5 +1,6 @@
 package oneConfig
 
+
 /** 
  * @Description:
  * @author : 贾亮
@@ -14,5 +15,9 @@ const ONE_MSG  = "ONE_MSG"
 const ONE_MSG_OK  = "0"
 const ONE_MSG_ERR  = "1"
 const ONE_MSG_INFO = "ONE_MSG_INFO"
+//选择需要的ACTION类型
+const ACTION_TYPE_COM  = "2"//计算
+const ACTION_TYPE_SUB  = "1"//摘要
+const ACTION_TYPE_SQL  = "3"//sql
 
 
