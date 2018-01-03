@@ -45,7 +45,7 @@ func (action *ComAction)GetName() string {
 }
 
 //计算部分
-func (action *ComAction)DoAction(mMap map[string]string,oneOrm orm.Ormer,onelog logUtils.LogUtils ,sfkqOrm bool,sfkqLog bool) error {
+func (action *ComAction)DoAction(mMap map[string]string,oneOrm orm.Ormer,onelog logUtils.LogUtils ,sfkqOrm bool) error {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Runtime error caught: %v", r)

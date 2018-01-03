@@ -38,6 +38,8 @@ func (action *SqlAction)SetName(name string) {
 func (action *SqlAction)SetSort(sort string) {
 	action.Sort = sort
 }
-func (action *SqlAction)DoAction(mMap map[string]string,oneOrm orm.Ormer,onelog logUtils.LogUtils ,sfkqOrm bool,sfkqLog bool) error {
+func (action *SqlAction)DoAction(mMap map[string]string,oneOrm orm.Ormer,onelog logUtils.LogUtils ,sfkqOrm bool) error {
+
+
 	return nil
 }

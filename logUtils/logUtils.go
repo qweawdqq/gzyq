@@ -9,6 +9,7 @@ type LogUtils interface {
  GetSfOpenLct() bool
  AddRz(info string)
  GetRz() []string
+	SetSfNeedRz(sfOpen bool)
 }
 /** 
  * @Description:日志工具类
@@ -27,6 +28,10 @@ type LogUtil struct {
 	SfNeedRz bool //是否记录日志
 	Rz []string//详细的日志
 
+}
+
+func (this *LogUtil)SetSfNeedRz(sfOpen bool){
+	this.SfNeedRz = sfOpen
 }
 /**
  * @Description:获取是否要记录日志

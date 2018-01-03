@@ -56,7 +56,7 @@ func (alpha *AlphaNode)DoAction(isNeedCompute bool, mMap map[string]string,oneOr
 
 	// 走action
 	if alphaValue == true&&alpha.ReAction != nil {
-		alpha.ReAction.DoAction(mMap,oneOrm,log,sfkqOrm,sfkqLog)
+		alpha.ReAction.DoAction(mMap,oneOrm,log,sfkqOrm)
 		if alpha.ReAction.GetIsReturn() {
 			return alpha.ReAction.GetResultStr(mMap)
 		}
@@ -141,8 +141,8 @@ func (beteNode *BeteNode)GetIsResult() bool {
 	return beteNode.Alpha.ReAction.GetIsReturn()
 }
 
-func (beteNode *BeteNode) DoAction(mMap map[string]string,oneOrm orm.Ormer,onelog logUtils.LogUtils ,sfkqOrm bool,sfkqLog bool) {
-	beteNode.Alpha.ReAction.DoAction(mMap,oneOrm,onelog,sfkqOrm,sfkqLog)
+func (beteNode *BeteNode) DoAction(mMap map[string]string,oneOrm orm.Ormer,onelog logUtils.LogUtils ,sfkqOrm bool) {
+	beteNode.Alpha.ReAction.DoAction(mMap,oneOrm,onelog,sfkqOrm)
 }
 
 

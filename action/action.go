@@ -18,7 +18,7 @@ type Action interface {
 	SetId(id string)
 	SetSort(sort string)
 	GetText() string
-	DoAction(mMap map[string]string,oneOrm orm.Ormer,log logUtils.LogUtils ,sfkqOrm bool,sfkqLog bool) error
+	DoAction(mMap map[string]string,oneOrm orm.Ormer,log logUtils.LogUtils ,sfkqOrm bool) error
 	GetSort() string
 }
 
@@ -288,9 +288,9 @@ type ResultAction struct {
 func (action *ResultAction)GetName() string {
 	return action.Name
 }
-func (action *ResultAction)DoAction(mMap map[string]string,oneOrm orm.Ormer,log logUtils.LogUtils ,sfkqOrm bool,sfkqLog bool) {
+func (action *ResultAction)DoAction(mMap map[string]string,oneOrm orm.Ormer,log logUtils.LogUtils ,sfkqOrm bool) {
 	for _, v := range action.ActionList {
-		v.DoAction(mMap,oneOrm,log,sfkqOrm,sfkqLog)
+		v.DoAction(mMap,oneOrm,log,sfkqOrm)
 	}
 }
 

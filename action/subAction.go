@@ -42,7 +42,7 @@ func (action *SubAction)GetText() string {
 func (action *SubAction)GetName() string {
 	return action.Name
 }
-func (action *SubAction)DoAction(mMap map[string]string,oneOrm orm.Ormer,onelog logUtils.LogUtils ,sfkqOrm bool,sfkqLog bool) error {
+func (action *SubAction)DoAction(mMap map[string]string,oneOrm orm.Ormer,onelog logUtils.LogUtils ,sfkqOrm bool) error {
 	var str = ""
 	if strings.Contains(action.GetText(), "$") {
 		str1, err := getSubAction(action.GetText(), mMap)
