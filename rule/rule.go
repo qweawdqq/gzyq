@@ -40,7 +40,7 @@ type AlphaNode struct {
  * @author : 贾亮
  * @date : 2017/6/7 15:55
  */
-func (alpha *AlphaNode)DoAction(isNeedCompute bool, mMap map[string]string,oneOrm orm.Ormer,log logUtils.LogUtils ,sfkqOrm bool,sfkqLog bool) string {
+func (alpha *AlphaNode)DoAction(isNeedCompute bool, mMap map[string]string,oneOrm orm.Ormer,log logUtils.LogUtils ,sfkqOrm bool) string {
 	//fmt.Println("alpha.name=", alpha.Name)
 	//if alpha.ReAction != nil {
 	//fmt.Println("alpha.ReAction.Name", alpha.ReAction.GetName())
@@ -73,7 +73,7 @@ func (alpha *AlphaNode)DoAction(isNeedCompute bool, mMap map[string]string,oneOr
 			//fmt.Println("alphaBool", strconv.FormatBool(alphaBool))
 			if alphaBool {
 				v.Alpha.SetValue(alphaBool)
-				reStr := v.Alpha.DoAction(false, mMap,oneOrm,log,sfkqOrm,sfkqLog)
+				reStr := v.Alpha.DoAction(false, mMap,oneOrm,log,sfkqOrm)
 				if reStr != "" {
 					return reStr
 				}
@@ -85,7 +85,7 @@ func (alpha *AlphaNode)DoAction(isNeedCompute bool, mMap map[string]string,oneOr
 		return ""
 	}
 	//走alpha
-	return alpha.NextAlpha.DoAction(true, mMap,oneOrm,log,sfkqOrm,sfkqLog)
+	return alpha.NextAlpha.DoAction(true, mMap,oneOrm,log,sfkqOrm)
 }
 
 func (alpha *AlphaNode)SetBeteList() {

@@ -10,6 +10,8 @@ import (
 	"github.com/astaxie/beego/orm"
 	"gzyq/logUtils"
 )
+var SubKey = "$"
+var SubSqlKey = "?"
 
 type Action interface {
 	GetName() string
@@ -31,22 +33,22 @@ type Action interface {
 func getSubAction(str string, mMap map[string]string) (string, error) {
 	var buffer bytes.Buffer
 	if str != "" {
-		array := strings.Split(str, "$")
+		array := strings.Split(str, SubKey)
 		isOddNumber := true
 		for _, v := range array {
 			if isOddNumber {
-				if v != "" {
+				//if v != "" {
 					buffer.WriteString(v)
-				}
+				//}
 			} else {
-				if v != "" {
+				//if v != "" {
 					if value, ok := mMap[v]; ok {
 						buffer.WriteString(value)
 					} else {
 						err := errors.New("不能发现key值为<" + v + ">的值")
 						return "", err
 					}
-				}
+				//}
 			}
 			isOddNumber = !isOddNumber
 		}

@@ -31,19 +31,21 @@ func (service *OneServiceImpl)GetResultByRuleId(paramMap map[string]string) (r m
 	start := time.Now()
 	fmt.Println("-->FunCall request:", paramMap)
 	ruleId := paramMap["ruleId"]
+
+
 	//是否开启事务
 	oneOrm :=getOrmByBool(true)
 	//是否开启日志
 	log:= getLogByBool(true)
 	alpha, _ := oneBo.GetIndexAlphaByRuleId(ruleId)
-	str := alpha.DoAction(true, paramMap,oneOrm,log,true,true)
+	str := alpha.DoAction(true, paramMap,oneOrm,log,true)
 	setErrReturn(paramMap, str)
 	r = paramMap
 	fmt.Println("str==", str)
 	//提交事务
 	setOrmCommit(oneOrm,r)
 	dis := time.Since(start)
-	fmt.Println("耗时", dis)
+	fmt.Println("耗时==================", dis)
 	return
 }
 

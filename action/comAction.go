@@ -55,7 +55,7 @@ func (action *ComAction)DoAction(mMap map[string]string,oneOrm orm.Ormer,onelog 
 		}
 	}()
 	var str = ""
-	if strings.Contains(action.GetText(), "$") {
+	if strings.Contains(action.GetText(), SubKey) {
 		str1, err := getSubAction(action.GetText(), mMap)
 		if err != nil {
 			return err
